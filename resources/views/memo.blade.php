@@ -37,6 +37,7 @@ function printTree($tree)
     <form id="delete-form" method="post" action="delete">
         {{ csrf_field() }}
         <input type="hidden" name="memo_id" value="{{ $memoId }}">
+        <input type="hidden" name="folder_id" value="{{ $folderId }}">
         <div class="card shadow-lg">
             <div class="card-header clearfix">
                 <h5 class="float-left">

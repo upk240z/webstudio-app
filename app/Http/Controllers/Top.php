@@ -63,7 +63,7 @@ class Top extends Controller
     public function delete(Request $request)
     {
         Memo::delete($request->post('memo_id'));
-        return redirect('/');
+        return redirect('/?folder_id=' . $request->post('folder_id'));
     }
 
     public function moveMemo(Request $request)
