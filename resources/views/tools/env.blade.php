@@ -20,7 +20,7 @@ use App\Util;
     <div class="card">
         <div class="card-header">Server</div>
         <div class="card-body">
-            <pre>{{ print_r($variables) }}</pre>
+            <pre>{{ print_r($variables, true) }}</pre>
         </div>
     </div>
 
