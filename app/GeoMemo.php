@@ -1,6 +1,7 @@
 <?php
 namespace App;
 
+use DB;
 use Illuminate\Support\Facades\Cookie;
 
 class GeoMemo
@@ -34,7 +35,7 @@ class GeoMemo
 
         $coordinates = self::spherical2cartesian($lat, $lng);
 
-        \DB::insert($sql, [
+        DB::insert($sql, [
             'lat' => $lat,
             'lng' => $lng,
             'label' => $label,
@@ -63,7 +64,7 @@ class GeoMemo
 
         $sql = 'SELECT * FROM place';
 
-        $rows = Util::object2array(\DB::select($sql));
+        $rows = Util::object2array(DB::select($sql));
         foreach ($rows as &$row) {
             $distance = acos(
                 (
@@ -106,7 +107,7 @@ class GeoMemo
 
         $coordinates = self::spherical2cartesian($lat, $lng);
 
-        \DB::update($sql, [
+        DB::update($sql, [
             'lat' => $lat,
             'lng' => $lng,
             'label' => $label,
@@ -121,7 +122,7 @@ class GeoMemo
 
     public static function removePlace($placeId)
     {
-        \DB::delete(
+        DB::delete(
             'DELETE from place WHERE place_id = :place_id',
             ['place_id' => $placeId]
         );

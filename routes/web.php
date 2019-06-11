@@ -15,6 +15,8 @@ Route::get('/info', function () {
     phpinfo();
 });
 
+Route::get('/login', 'Login@index');
+Route::post('/login', 'Login@login');
 Route::get('/logout', 'Login@logout');
 
 Route::get('/', 'Top@index');
