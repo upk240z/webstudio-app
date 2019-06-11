@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\GeoMemo;
 use App\Util;
 use Illuminate\Http\Request;
 

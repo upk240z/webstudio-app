@@ -19,11 +19,7 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-        '/api/base64',
-        '/api/translation',
-        '/api/fck',
-        '/geoapi/cookie',
-        '/geoapi/place',
-        '/geoapi/remove',
+        '/api/*',
+        '/geoapi/*',
     ];
 }
