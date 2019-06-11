@@ -18,8 +18,9 @@ use App\Util;
             <h4>login</h4>
         </div>
         <div class="card-body">
-            <form method="post" action="{{ url('/') . '/login' }}">
+            <form method="post" action="">
                 {{ csrf_field() }}
+                <input type="hidden" name="login_form" value="1">
 
                 <?php Util::showMessage('error') ?>
                 <?php Util::showMessage('success') ?>
