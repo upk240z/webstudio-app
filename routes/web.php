@@ -82,3 +82,6 @@ Route::get('/samples/gaauth', 'Samples@gaauth');
 Route::post('/samples/gaauth', 'Samples@gaauthPost');
 Route::get('/samples/mailer', 'Samples@mailer');
 Route::post('/samples/mailer', 'Samples@mailerPost');
+
+Route::get('/free/params', 'Free@params');
+Route::post('/free/params', 'Free@params');
