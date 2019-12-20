@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Util;
+use Cache;
 use Illuminate\Http\Request;
 
 class Api extends Controller
@@ -45,6 +46,30 @@ class Api extends Controller
 
         return response($content)->withHeaders([
             'Content-Type' => 'audio/x-wav',
+            'Content-Length' => strlen($content),
+        ]);
+    }
+
+    public function editorImage(Request $request)
+    {
+        $file = $request->file('upload');
+
+        $image = [
+            'data' => file_get_contents($file->path()),
+            'type' => $file->getClientMimeType(),
+            'size' => $file->getSize(),
+        ];
+        $key = hash('sha256', $image['data']);
+
+        Cache::set($key, $image);
+
+        $content = json_encode([
+            'url' => '../image/' . $key,
+            'uploaded' => true,
+        ]);
+
+        return response($content)->withHeaders([
+            'Content-Type' => 'application/json',
             'Content-Length' => strlen($content),
         ]);
     }

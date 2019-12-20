@@ -27,6 +27,7 @@ Route::post('/movememo', 'Top@moveMemo');
 Route::get('/form', 'Top@form');
 Route::post('/form', 'Top@formPost');
 Route::post('/delete', 'Top@delete');
+Route::get('/image/{key}', 'Top@image');
 
 Route::get('/tools/regex', 'Tools@regex');
 Route::post('/tools/regex', 'Tools@regexPost');
@@ -71,6 +72,7 @@ Route::post('/geoapi/remove', 'GeoApi@remove');
 
 Route::get('/samples/fck', 'Samples@fck');
 Route::post('/samples/fck', 'Samples@fckPost');
+Route::post('/api/ckeimage', 'Api@editorImage');
 Route::get('/samples/geo', 'Samples@geo');
 Route::post('/samples/geo', 'Samples@geoPost');
 

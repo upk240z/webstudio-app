@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Memo;
+use Cache;
 use Illuminate\Http\Request;
 
 class Top extends Controller
@@ -113,5 +114,14 @@ class Top extends Controller
         }
 
         return redirect(sprintf('/memo?id=%d&folder_id=%d', $memoId, $folderId));
+    }
+
+    public function image(Request $request, $key)
+    {
+        $image = Cache::get($key);
+        return response($image['data'])->withHeaders([
+            'Content-Type' => $image['type'],
+            'Content-Length' => $image['size'],
+        ]);
     }
 }

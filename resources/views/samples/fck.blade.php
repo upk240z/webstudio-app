@@ -31,7 +31,7 @@ use App\Util;
         <div class="card">
             <div class="card-header">Form</div>
             <div class="card-body">
-                <textarea name="editor1" id="editor1" class="form-control">{{ $savedata }}</textarea>
+                <textarea name="editor" id="editor" class="form-control">{{ $savedata }}</textarea>
             </div>
         </div>
 
@@ -50,17 +50,27 @@ use App\Util;
         <script src="{{ asset('dp.SyntaxHighlighter/Scripts/shCore.js') }}"></script>
         <script src="{{ asset('dp.SyntaxHighlighter/Scripts/shBrushJScript.js') }}"></script>
         <script src="{{ asset('dp.SyntaxHighlighter/Scripts/shBrushPhp.js') }}"></script>
-        <script src="https://cdn.ckeditor.com/4.5.6/full/ckeditor.js" integrity="sha384-jGhXdo95/RFJWYUncmagYG4/3T6oJVoNVXxkhvQ2TCFHcHw8jc95AMDOnya5NeCa" crossorigin="anonymous"></script>
+        <script src="https://cdn.ckeditor.com/ckeditor5/16.0.0/classic/ckeditor.js" integrity="sha384-+I4oPzaI7M3BCILdQVSUpksWyZVOvRqN6lYmWH/tT1FoHPbUKUfoJKV0yRcaNXwv" crossorigin="anonymous"></script>
         <script>
             $(function () {
                 dp.SyntaxHighlighter.ClipboardSwf = '../dp.SyntaxHighlighter/Scripts/clipboard.swf';
                 dp.SyntaxHighlighter.HighlightAll('code');
 
-                CKEDITOR.replace(
-                    'editor1', {
-                        language : 'ja'
-                    }
-                );
+                ClassicEditor
+                    .create(
+                        document.querySelector('#editor'),
+                        {
+                            ckfinder: {
+                                uploadUrl: '../api/ckeimage'
+                            }
+                        }
+                    )
+                    .then( editor => {
+                        console.log(editor);
+                    } )
+                    .catch( error => {
+                        console.error(error);
+                    } );
             });
         </script>
     @endcomponent
