@@ -908,4 +908,16 @@ __END__;
            'cookie' => $cookie,
         ]);
     }
+
+    public function zen2han(Request $request)
+    {
+        $han = null;
+        if ($request->method() == 'POST') {
+            $han = mb_convert_kana($request->post('zen'), 'as');
+        }
+        return view('tools.zen2han', [
+            'zen' => $request->post('zen'),
+            'han' => $han,
+        ]);
+    }
 }

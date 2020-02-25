@@ -39,6 +39,7 @@ $isMemo = $_url == $_base || preg_match('@/form$@', $_url);
                     <a class="dropdown-item" href="<?php echo $_base ?>/tools/geomemo">Geo</a>
                     <a class="dropdown-item" href="<?php echo $_base ?>/tools/csr">CSR</a>
                     <a class="dropdown-item" href="<?php echo $_base ?>/tools/env">environment</a>
+                    <a class="dropdown-item" href="<?php echo $_base ?>/tools/zen2han">zen2han</a>
                 </div>
             </li>
 
