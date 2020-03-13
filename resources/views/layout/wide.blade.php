@@ -9,7 +9,7 @@
     @yield('head')
 </head>
 <body>
-<div class="container">
+<div class="container-fluid">
     @include('parts.nav')
     @yield('contents')
 </div>
