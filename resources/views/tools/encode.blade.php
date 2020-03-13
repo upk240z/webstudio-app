@@ -1,14 +1,10 @@
 <?php
 use App\Util;
 ?>
-@extends('layout')
+@extends('layout.main')
 
-@section('head')
-    @component('parts.head')
-        @slot('title')
-            URL Encode/Decode
-        @endslot
-    @endcomponent
+@section('title')
+    URL Encode/Decode
 @endsection
 
 @section('contents')
@@ -62,15 +58,4 @@ use App\Util;
         @endif
 
     </form>
-
-@endsection
-
-@section('footer')
-    @component('parts.footer')
-        <script>
-            $(function () {
-
-            });
-        </script>
-    @endcomponent
 @endsection

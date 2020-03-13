@@ -1,14 +1,10 @@
 <?php
 use App\Util;
 ?>
-@extends('layout')
+@extends('layout.main')
 
-@section('head')
-    @component('parts.head')
-        @slot('title')
-            HTML escape
-        @endslot
-    @endcomponent
+@section('title')
+    HTML escape
 @endsection
 
 @section('contents')
@@ -41,15 +37,4 @@ use App\Util;
         @endif
 
     </form>
-
-@endsection
-
-@section('footer')
-    @component('parts.footer')
-        <script>
-            $(function () {
-
-            });
-        </script>
-    @endcomponent
 @endsection

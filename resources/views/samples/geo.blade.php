@@ -1,19 +1,18 @@
 <?php
 use App\Util;
 ?>
-@extends('layout')
+@extends('layout.main')
+
+@section('title')
+    Geo Location API
+@endsection
 
 @section('head')
-    @component('parts.head')
-        @slot('title')
-            Geo Location API
-        @endslot
-        <style>
-            #map {
-                height: 500px;
-            }
-        </style>
-    @endcomponent
+    <style>
+        #map {
+            height: 500px;
+        }
+    </style>
 @endsection
 
 @section('contents')
@@ -56,67 +55,65 @@ use App\Util;
 
 @endsection
 
-@section('footer')
-    @component('parts.footer')
-        <script>
-            var map;
-            var initMap = function()
-            {
-                map = new google.maps.Map(document.getElementById("map"), {
-                    center : {
-                        lat : parseFloat($("input[name=lat]:first").val()),
-                        lng : parseFloat($("input[name=lon]:first").val())
-                    },
-                    zoom : parseInt($("input[name=zoom]:first").val())
-                });
-
-                map.addListener('center_changed', function() {
-                    var center = map.getCenter();
-                    $("input[name=lat]").val(center.lat());
-                    $("input[name=lon]").val(center.lng());
-                });
-
-                map.addListener('zoom_changed', function() {
-                    $("input[name=zoom]").val(map.getZoom());
-                });
-            };
-
-            $(function() {
-                $("#geobtn").on("click", function() {
-                    if (navigator.geolocation === false) {
-                        alert("対応ブラウザではありません");
-                        return;
-                    }
-
-                    navigator.geolocation.getCurrentPosition(
-                        function(pos) {
-                            $("input[name=lat]").val(pos.coords.latitude);
-                            $("input[name=lon]").val(pos.coords.longitude);
-
-                            map.setCenter({
-                                lat : pos.coords.latitude,
-                                lng : pos.coords.longitude
-                            });
-                        },
-                        function(error) {
-                            switch (error.code) {
-                                case error.POSITION_UNAVAILABLE:
-                                    alert("位置情報の取得ができませんでした");
-                                    break;
-                                case error.PERMISSION_DENIED:
-                                    alert("位置情報取得の使用許可がされませんでした");
-                                    break;
-                                case error.PERMISSION_DENIED_TIMEOUT:
-                                    alert("位置情報取得中にタイムアウトしました");
-                                    break;
-                            }
-                        }
-                    );
-                });
+@section('script')
+    <script>
+        var map;
+        var initMap = function()
+        {
+            map = new google.maps.Map(document.getElementById("map"), {
+                center : {
+                    lat : parseFloat($("input[name=lat]:first").val()),
+                    lng : parseFloat($("input[name=lon]:first").val())
+                },
+                zoom : parseInt($("input[name=zoom]:first").val())
             });
-        </script>
-        <script async defer
+
+            map.addListener('center_changed', function() {
+                var center = map.getCenter();
+                $("input[name=lat]").val(center.lat());
+                $("input[name=lon]").val(center.lng());
+            });
+
+            map.addListener('zoom_changed', function() {
+                $("input[name=zoom]").val(map.getZoom());
+            });
+        };
+
+        $(function() {
+            $("#geobtn").on("click", function() {
+                if (navigator.geolocation === false) {
+                    alert("対応ブラウザではありません");
+                    return;
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                    function(pos) {
+                        $("input[name=lat]").val(pos.coords.latitude);
+                        $("input[name=lon]").val(pos.coords.longitude);
+
+                        map.setCenter({
+                            lat : pos.coords.latitude,
+                            lng : pos.coords.longitude
+                        });
+                    },
+                    function(error) {
+                        switch (error.code) {
+                            case error.POSITION_UNAVAILABLE:
+                                alert("位置情報の取得ができませんでした");
+                                break;
+                            case error.PERMISSION_DENIED:
+                                alert("位置情報取得の使用許可がされませんでした");
+                                break;
+                            case error.PERMISSION_DENIED_TIMEOUT:
+                                alert("位置情報取得中にタイムアウトしました");
+                                break;
+                        }
+                    }
+                );
+            });
+        });
+    </script>
+    <script async defer
             src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAP_KEY') }}&callback=initMap">
-        </script>
-    @endcomponent
+    </script>
 @endsection

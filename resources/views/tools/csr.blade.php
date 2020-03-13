@@ -1,14 +1,10 @@
 <?php
 use App\Util;
 ?>
-@extends('layout')
+@extends('layout.main')
 
-@section('head')
-    @component('parts.head')
-        @slot('title')
-            CSR Generator
-        @endslot
-    @endcomponent
+@section('title')
+    CSR Generator
 @endsection
 
 @section('contents')
@@ -70,7 +66,7 @@ use App\Util;
 
     </form>
 
-    @if ($created['csr'])
+    @if ($created)
     <div class="row mt-3">
         <div class="col-md-6">
             <div class="card">
@@ -103,22 +99,20 @@ use App\Util;
 
 @endsection
 
-@section('footer')
-    @component('parts.footer')
-        <script>
-            $(function () {
-                $('[name=copy-key-btn]').on('click', function() {
-                    Util.copy($('#key-text').text());
-                    return false;
-                });
-
-                $('[name=copy-csr-btn]').on('click', function() {
-                    Util.copy($('#csr-text').text());
-                    return false;
-                });
-
-                Validation.init('#input-form');
+@section('script')
+    <script>
+        $(function () {
+            $('[name=copy-key-btn]').on('click', function() {
+                Util.copy($('#key-text').text());
+                return false;
             });
-        </script>
-    @endcomponent
+
+            $('[name=copy-csr-btn]').on('click', function() {
+                Util.copy($('#csr-text').text());
+                return false;
+            });
+
+            Validation.init('#input-form');
+        });
+    </script>
 @endsection

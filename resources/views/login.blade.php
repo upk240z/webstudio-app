@@ -1,18 +1,13 @@
 <?php
 use App\Util;
 ?>
-@extends('layout-login')
+@extends('layout.base')
 
-@section('head')
-    @component('parts.head')
-        @slot('title')
-            Login
-        @endslot
-    @endcomponent
+@section('title')
+    Login
 @endsection
 
 @section('contents')
-
     <div class="card mt-3 shadow-lg">
         <div class="card-header bg-info text-light">
             <h4>login</h4>
@@ -47,15 +42,4 @@ use App\Util;
             </form>
         </div>
     </div>
-
-@endsection
-
-@section('footer')
-    @component('parts.footer')
-        <script>
-            $(function () {
-
-            });
-        </script>
-    @endcomponent
 @endsection

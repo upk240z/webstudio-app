@@ -19,14 +19,10 @@ function printTree($tree)
 <?php
 }
 ?>
-@extends('layout')
+@extends('layout.main')
 
-@section('head')
-    @component('parts.head')
-        @slot('title')
-            Memo
-        @endslot
-    @endcomponent
+@section('title')
+    Memo
 @endsection
 
 @section('contents')
@@ -86,34 +82,32 @@ function printTree($tree)
 
 @endsection
 
-@section('footer')
-    @component('parts.footer')
-        <script>
-            $(function () {
-                $('textarea').on('keydown', function(e) {
-                    if (e.keyCode == 9) {
-                        e.preventDefault();
-                        var target = $(this);
-                        var pos = target.get(0).selectionStart;
-                        var text = target.val();
-                        target.val(
-                            text.substr(0, pos) + "    " + text.substr(pos)
-                        );
-                        target.get(0).setSelectionRange(pos + 4, pos + 4);
-                        return false;
-                    }
-                });
-
-                $(this).on('keydown', function(e) {
-                    if ($('#memoform').length == 0) return true;
-
-                    if (e.which == 83 && e.ctrlKey == true) {
-                        e.preventDefault();
-                        $('button[name=save-btn]').trigger('click');
-                        return false;
-                    }
-                });
+@section('script')
+    <script>
+        $(function () {
+            $('textarea').on('keydown', function(e) {
+                if (e.keyCode == 9) {
+                    e.preventDefault();
+                    var target = $(this);
+                    var pos = target.get(0).selectionStart;
+                    var text = target.val();
+                    target.val(
+                        text.substr(0, pos) + "    " + text.substr(pos)
+                    );
+                    target.get(0).setSelectionRange(pos + 4, pos + 4);
+                    return false;
+                }
             });
-        </script>
-    @endcomponent
+
+            $(this).on('keydown', function(e) {
+                if ($('#memoform').length == 0) return true;
+
+                if (e.which == 83 && e.ctrlKey == true) {
+                    e.preventDefault();
+                    $('button[name=save-btn]').trigger('click');
+                    return false;
+                }
+            });
+        });
+    </script>
 @endsection

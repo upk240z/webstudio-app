@@ -1,14 +1,10 @@
 <?php
 use App\Util;
 ?>
-@extends('layout')
+@extends('layout.main')
 
-@section('head')
-    @component('parts.head')
-        @slot('title')
-            BlowFish暗号(CBC/PKCS7Padding)
-        @endslot
-    @endcomponent
+@section('title')
+    BlowFish暗号(CBC/PKCS7Padding)
 @endsection
 
 @section('contents')
@@ -88,13 +84,4 @@ use App\Util;
 
     </form>
 
-@endsection
-
-@section('footer')
-    @component('parts.footer')
-        <script>
-            $(function () {
-            });
-        </script>
-    @endcomponent
 @endsection

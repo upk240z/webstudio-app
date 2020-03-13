@@ -1,14 +1,10 @@
 <?php
 use App\Util;
 ?>
-@extends('layout')
+@extends('layout.main')
 
-@section('head')
-    @component('parts.head')
-        @slot('title')
-            Calc time
-        @endslot
-    @endcomponent
+@section('title')
+    Calc time
 @endsection
 
 @section('contents')
@@ -119,14 +115,4 @@ use App\Util;
 
     </form>
 
-@endsection
-
-@section('footer')
-    @component('parts.footer')
-        <script>
-            $(function () {
-
-            });
-        </script>
-    @endcomponent
 @endsection

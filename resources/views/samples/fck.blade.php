@@ -1,14 +1,13 @@
 <?php
 use App\Util;
 ?>
-@extends('layout')
+@extends('layout.main')
+
+@section('title')
+    CKEditor
+@endsection
 
 @section('head')
-    @component('parts.head')
-        @slot('title')
-            CKEditor
-        @endslot
-    @endcomponent
     <link rel="stylesheet" href="{{ asset('dp.SyntaxHighlighter/Styles/SyntaxHighlighter.css') }}">
 @endsection
 
@@ -45,33 +44,31 @@ use App\Util;
 
 @endsection
 
-@section('footer')
-    @component('parts.footer')
-        <script src="{{ asset('dp.SyntaxHighlighter/Scripts/shCore.js') }}"></script>
-        <script src="{{ asset('dp.SyntaxHighlighter/Scripts/shBrushJScript.js') }}"></script>
-        <script src="{{ asset('dp.SyntaxHighlighter/Scripts/shBrushPhp.js') }}"></script>
-        <script src="https://cdn.ckeditor.com/ckeditor5/16.0.0/classic/ckeditor.js" integrity="sha384-+I4oPzaI7M3BCILdQVSUpksWyZVOvRqN6lYmWH/tT1FoHPbUKUfoJKV0yRcaNXwv" crossorigin="anonymous"></script>
-        <script>
-            $(function () {
-                dp.SyntaxHighlighter.ClipboardSwf = '../dp.SyntaxHighlighter/Scripts/clipboard.swf';
-                dp.SyntaxHighlighter.HighlightAll('code');
+@section('script')
+    <script src="{{ asset('dp.SyntaxHighlighter/Scripts/shCore.js') }}"></script>
+    <script src="{{ asset('dp.SyntaxHighlighter/Scripts/shBrushJScript.js') }}"></script>
+    <script src="{{ asset('dp.SyntaxHighlighter/Scripts/shBrushPhp.js') }}"></script>
+    <script src="https://cdn.ckeditor.com/ckeditor5/16.0.0/classic/ckeditor.js" integrity="sha384-+I4oPzaI7M3BCILdQVSUpksWyZVOvRqN6lYmWH/tT1FoHPbUKUfoJKV0yRcaNXwv" crossorigin="anonymous"></script>
+    <script>
+        $(function () {
+            dp.SyntaxHighlighter.ClipboardSwf = '../dp.SyntaxHighlighter/Scripts/clipboard.swf';
+            dp.SyntaxHighlighter.HighlightAll('code');
 
-                ClassicEditor
-                    .create(
-                        document.querySelector('#editor'),
-                        {
-                            ckfinder: {
-                                uploadUrl: '../api/ckeimage'
-                            }
+            ClassicEditor
+                .create(
+                    document.querySelector('#editor'),
+                    {
+                        ckfinder: {
+                            uploadUrl: '../api/ckeimage'
                         }
-                    )
-                    .then( editor => {
-                        console.log(editor);
-                    } )
-                    .catch( error => {
-                        console.error(error);
-                    } );
-            });
-        </script>
-    @endcomponent
+                    }
+                )
+                .then( editor => {
+                    console.log(editor);
+                } )
+                .catch( error => {
+                    console.error(error);
+                } );
+        });
+    </script>
 @endsection

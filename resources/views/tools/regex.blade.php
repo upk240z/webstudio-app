@@ -1,11 +1,7 @@
-@extends('layout')
+@extends('layout.main')
 
-@section('head')
-    @component('parts.head')
-        @slot('title')
-            Regex
-        @endslot
-    @endcomponent
+@section('title')
+    Regex
 @endsection
 
 @section('contents')
@@ -62,15 +58,4 @@
         @endif
 
     </form>
-
-@endsection
-
-@section('footer')
-    @component('parts.footer')
-        <script>
-            $(function () {
-
-            });
-        </script>
-    @endcomponent
 @endsection

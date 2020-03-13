@@ -1,14 +1,10 @@
 <?php
 use App\Util;
 ?>
-@extends('layout')
+@extends('layout.main')
 
-@section('head')
-    @component('parts.head')
-        @slot('title')
-            JSON
-        @endslot
-    @endcomponent
+@section('title')
+    JSON
 @endsection
 
 @section('contents')
@@ -58,22 +54,19 @@ use App\Util;
         @endif
 
     </form>
-
 @endsection
 
-@section('footer')
-    @component('parts.footer')
-        <script>
-            $(function () {
-                $('[name=copy-btn]').on('click', function() {
-                    Util.copy($('#yaml-text').text());
-                    return false;
-                });
-                $('[name=toggle-btn]').on('click', function() {
-                    $(this).closest('div.card').find('div.card-body').toggle();
-                    return false;
-                });
+@section('script')
+    <script>
+        $(function() {
+            $('[name=copy-btn]').on('click', function() {
+                Util.copy($('#yaml-text').text());
+                return false;
             });
-        </script>
-    @endcomponent
+            $('[name=toggle-btn]').on('click', function() {
+                $(this).closest('div.card').find('div.card-body').toggle();
+                return false;
+            });
+        });
+    </script>
 @endsection

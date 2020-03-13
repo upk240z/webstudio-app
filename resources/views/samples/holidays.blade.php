@@ -1,14 +1,10 @@
 <?php
 use App\Util;
 ?>
-@extends('layout')
+@extends('layout.main')
 
-@section('head')
-    @component('parts.head')
-        @slot('title')
-            Japan holidays
-        @endslot
-    @endcomponent
+@section('title')
+    Japanese holidays
 @endsection
 
 @section('contents')
@@ -30,14 +26,4 @@ use App\Util;
         @endforeach
     </table>
 
-@endsection
-
-@section('footer')
-    @component('parts.footer')
-        <script>
-            $(function () {
-
-            });
-        </script>
-    @endcomponent
 @endsection

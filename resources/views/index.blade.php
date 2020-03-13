@@ -1,14 +1,10 @@
 <?php
 use App\Util;
 ?>
-@extends('layout')
+@extends('layout.main')
 
-@section('head')
-    @component('parts.head')
-        @slot('title')
-            Memo
-        @endslot
-    @endcomponent
+@section('title')
+    Memo
 @endsection
 
 @section('contents')
@@ -99,20 +95,18 @@ use App\Util;
 
 @endsection
 
-@section('footer')
-    @component('parts.footer')
-        <script>
-            $(function () {
-                $('button[name=folder-btn]').on('click', function() {
-                    $('#folder-form input').val('');
-                    $('#folder-form').modal();
-                });
-                $('button[name=folder-edit-btn]').on('click', function() {
-                    $('#folder-form input[name=folder_id]').val({{ $folderId }});
-                    $('#folder-form input[name=folder_name]').val($('.folder-link:last').text());
-                    $('#folder-form').modal();
-                });
+@section('script')
+    <script>
+        $(function () {
+            $('button[name=folder-btn]').on('click', function() {
+                $('#folder-form input').val('');
+                $('#folder-form').modal();
             });
-        </script>
-    @endcomponent
+            $('button[name=folder-edit-btn]').on('click', function() {
+                $('#folder-form input[name=folder_id]').val({{ $folderId }});
+                $('#folder-form input[name=folder_name]').val($('.folder-link:last').text());
+                $('#folder-form').modal();
+            });
+        });
+    </script>
 @endsection

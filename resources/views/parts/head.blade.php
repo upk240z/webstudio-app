@@ -7,4 +7,4 @@
 <link rel="stylesheet" href="{{ asset('css/base.css') }}">
 <link rel="stylesheet" href="{{ asset('css/validation.css') }}">
 <link rel="shortcut icon" href="{{ asset('favicon.ico') }}">
-{{ $slot }}
+

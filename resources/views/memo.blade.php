@@ -19,14 +19,10 @@ function printTree($tree)
 <?php
 }
 ?>
-@extends('layout')
+@extends('layout.main')
 
-@section('head')
-    @component('parts.head')
-        @slot('title')
-            Memo
-        @endslot
-    @endcomponent
+@section('title')
+    Memo
 @endsection
 
 @section('contents')
@@ -107,26 +103,24 @@ function printTree($tree)
 
 @endsection
 
-@section('footer')
-    @component('parts.footer')
-        <script>
-            $(function () {
-                $('#delete-form').on('submit', function() {
-                    if (confirm('are you sure?') == false) {
-                        return false;
-                    }
-                });
-
-                $('button[name=move-btn]').on('click', function() {
-                    $('#folder-selector').modal();
-                });
-
-                $('a[name=folder-name]').on('click', function() {
-                    $('#move-form input[name=folder_id]').val($(this).attr('data-id'));
-                    $('#move-form').submit();
+@section('script')
+    <script>
+        $(function () {
+            $('#delete-form').on('submit', function() {
+                if (confirm('are you sure?') == false) {
                     return false;
-                });
+                }
             });
-        </script>
-    @endcomponent
+
+            $('button[name=move-btn]').on('click', function() {
+                $('#folder-selector').modal();
+            });
+
+            $('a[name=folder-name]').on('click', function() {
+                $('#move-form input[name=folder_id]').val($(this).attr('data-id'));
+                $('#move-form').submit();
+                return false;
+            });
+        });
+    </script>
 @endsection

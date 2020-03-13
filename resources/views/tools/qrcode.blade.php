@@ -6,14 +6,10 @@ $TYPES = array(
     "jpeg" => "JPEG"
 );
 ?>
-@extends('layout')
+@extends('layout.main')
 
-@section('head')
-    @component('parts.head')
-        @slot('title')
-            QR Code
-        @endslot
-    @endcomponent
+@section('title')
+    QR Code
 @endsection
 
 @section('contents')
@@ -73,21 +69,19 @@ $TYPES = array(
 
 @endsection
 
-@section('footer')
-    @component('parts.footer')
-        <script>
-            $(function () {
-                $("#slider").slider({
-                    min: 1,
-                    max: 19,
-                    value: "{{ $size }}",
-                    slide: function(e, ui)
-                    {
-                        $("input[name=size]:first").val(ui.value);
-                        $("#slidersize").text(ui.value);
-                    }
-                });
+@section('script')
+    <script>
+        $(function () {
+            $("#slider").slider({
+                min: 1,
+                max: 19,
+                value: "{{ $size }}",
+                slide: function(e, ui)
+                {
+                    $("input[name=size]:first").val(ui.value);
+                    $("#slidersize").text(ui.value);
+                }
             });
-        </script>
-    @endcomponent
+        });
+    </script>
 @endsection

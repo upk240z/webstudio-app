@@ -1,14 +1,10 @@
 <?php
 use App\Util;
 ?>
-@extends('layout')
+@extends('layout.main')
 
-@section('head')
-    @component('parts.head')
-        @slot('title')
-            PHP Serialize
-        @endslot
-    @endcomponent
+@section('title')
+    PHP Serialize
 @endsection
 
 @section('contents')
@@ -49,14 +45,4 @@ use App\Util;
         </div>
 
     </form>
-@endsection
-
-@section('footer')
-    @component('parts.footer')
-        <script>
-            $(function () {
-
-            });
-        </script>
-    @endcomponent
 @endsection

@@ -1,11 +1,7 @@
-@extends('layout')
+@extends('layout.main')
 
-@section('head')
-    @component('parts.head')
-        @slot('title')
-            Base64
-        @endslot
-    @endcomponent
+@section('title')
+    Base64
 @endsection
 
 @section('contents')
@@ -39,15 +35,13 @@
 
 @endsection
 
-@section('footer')
-    @component('parts.footer')
-        <script>
-            $(function () {
-                $('[name=copy-btn]').on('click', function() {
-                    Util.copy($('#han').text());
-                    return false;
-                });
+@section('script')
+    <script>
+        $(function () {
+            $('[name=copy-btn]').on('click', function() {
+                Util.copy($('#han').text());
+                return false;
             });
-        </script>
-    @endcomponent
+        });
+    </script>
 @endsection

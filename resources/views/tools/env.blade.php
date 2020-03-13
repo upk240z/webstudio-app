@@ -1,14 +1,10 @@
 <?php
 use App\Util;
 ?>
-@extends('layout')
+@extends('layout.main')
 
-@section('head')
-    @component('parts.head')
-        @slot('title')
-            Environment variables
-        @endslot
-    @endcomponent
+@section('title')
+    Environment variables
 @endsection
 
 @section('contents')
@@ -23,15 +19,4 @@ use App\Util;
             <pre>{{ print_r($variables, true) }}</pre>
         </div>
     </div>
-
-@endsection
-
-@section('footer')
-    @component('parts.footer')
-        <script>
-            $(function () {
-
-            });
-        </script>
-    @endcomponent
 @endsection

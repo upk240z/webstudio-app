@@ -1,14 +1,10 @@
 <?php
 use App\Util;
 ?>
-@extends('layout')
+@extends('layout.main')
 
-@section('head')
-    @component('parts.head')
-        @slot('title')
-            Google auth
-        @endslot
-    @endcomponent
+@section('title')
+    Google auth
 @endsection
 
 @section('contents')
@@ -56,14 +52,4 @@ use App\Util;
         </div>
     </form>
 
-@endsection
-
-@section('footer')
-    @component('parts.footer')
-        <script>
-            $(function () {
-
-            });
-        </script>
-    @endcomponent
 @endsection

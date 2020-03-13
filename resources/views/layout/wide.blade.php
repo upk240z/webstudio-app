@@ -1,13 +1,19 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
+    @component('parts.head')
+        @slot('title')
+            @yield('title')
+        @endslot
+    @endcomponent
     @yield('head')
 </head>
 <body>
 <div class="container">
+    @include('parts.nav')
     @yield('contents')
 </div>
-
-@yield('footer')
+@include('parts.footer')
+@yield('script')
 </body>
 </html>

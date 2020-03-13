@@ -10,5 +10,3 @@
 <script src="{{ asset('js/common.js') }}"></script>
 
 <textarea id="copy-boad" name="copy-boad" style="display:none"></textarea>
-
-{{ $slot }}
