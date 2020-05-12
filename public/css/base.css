@@ -147,3 +147,16 @@ footer {
     height: auto;
     background-color: #fff;
 }
+
+.fixed-length td, .fixed-length th {
+    font-size: 80%;
+    padding: 3px;
+}
+
+table.fixed-length {
+    width: auto;
+}
+
+.parsed-columns {
+    overflow: scroll;
+}

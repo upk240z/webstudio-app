@@ -63,6 +63,7 @@ Route::get('/api/speak', 'Api@speak');
 Route::get('/tools/csr', 'Tools@csr');
 Route::post('/tools/csr', 'Tools@csrPost');
 Route::match(['get', 'post'], '/tools/zen2han', 'Tools@zen2han');
+Route::match(['get', 'post'], '/tools/flen', 'Tools@fixedLength');
 
 Route::get('/tools/geomemo', 'Tools@geomemo');
 Route::get('/geoapi/places', 'GeoApi@places');

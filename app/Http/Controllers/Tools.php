@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App;
 use App\GeoMemo;
 use App\Util;
 use Illuminate\Http\Request;
@@ -918,6 +919,76 @@ __END__;
         return view('tools.zen2han', [
             'zen' => $request->post('zen'),
             'han' => $han,
+        ]);
+    }
+
+    public function fixedLength(Request $request)
+    {
+        $configs = yaml_parse_file(App::basePath() . '/config/fixed-length.yaml');
+
+        $rows = null;
+        if ($request->method() == 'POST') {
+            $config = $configs[$request->post('type')];
+
+            do {
+                if (!$request->hasFile('file')) {
+                    Util::setMessage('error', 'select file');
+                    break;
+                }
+
+                $file = $request->file('file');
+                if (!$file->isValid()) {
+                    Util::setMessage('error', 'invalid file');
+                    break;
+                }
+
+                $fp = fopen($file->path(), 'r');
+                if (!$fp) {
+                    Util::setMessage('error', 'file reading error:' . $file->path());
+                    break;
+                }
+
+                $rows = [];
+                while (!feof($fp)) {
+                    $line = trim(fgets($fp));
+                    if (strlen($line) == 0) { continue; }
+                    $columns = [];
+                    $pos = 0;
+                    foreach ($config['columns'] as $row) {
+                        list($len, $name) = $row;
+                        $val = mb_convert_encoding(
+                            substr($line, $pos, $len),
+                            'UTF-8',
+                            'SJIS-win'
+                        );
+                        $val = str_replace('　', $request->post('replace'), $val);
+                        $columns[] = [
+                            'name' => $name,
+                            'value' => $val,
+                            'len' => $len,
+                            'pos' => $pos + 1,
+                        ];
+                        $pos += $len;
+                    }
+                    $rows[] = [
+                        'columns' => $columns,
+                        'total' => $pos,
+                    ];
+                }
+                fclose($fp);
+            } while(false);
+
+        }
+
+        $files = [];
+        foreach ($configs as $key => $config) {
+            $files[$key] = $config['name'];
+        }
+
+        return view('tools.fixed-length', [
+            'files' => $files,
+            'rows' => $rows,
+            'post' => $request->post(),
         ]);
     }
 }

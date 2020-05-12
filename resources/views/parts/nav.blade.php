@@ -40,6 +40,7 @@ $isMemo = $_url == $_base || preg_match('@/form$@', $_url);
                     <a class="dropdown-item" href="{{ $_base }}/tools/csr">CSR</a>
                     <a class="dropdown-item" href="{{ $_base }}/tools/env">environment</a>
                     <a class="dropdown-item" href="{{ $_base }}/tools/zen2han">zen2han</a>
+                    <a class="dropdown-item" href="{{ $_base }}/tools/flen">Fixed length file</a>
                 </div>
             </li>
 
