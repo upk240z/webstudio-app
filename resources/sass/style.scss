@@ -1,7 +1,4 @@
-@CHARSET "UTF-8";
-body {
-    font-family: "メイリオ", "Meiryo", verdana, "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", Osaka, "ＭＳ Ｐゴシック", "MS PGothic", Sans-Serif !important;
-}
+@import "validation";
 
 h2 {
     font-size: 100%;
@@ -148,15 +145,20 @@ footer {
     background-color: #fff;
 }
 
-.fixed-length td, .fixed-length th {
-    font-size: 80%;
-    padding: 3px;
+.fixed-parsed {
+    .fixed-length {
+        td, th {
+            font-size: 80%;
+            padding: 3px;
+        }
+    }
+
+    table {
+        width: auto;
+    }
+
+    .parsed-columns {
+        overflow: scroll;
+    }
 }
 
-table.fixed-length {
-    width: auto;
-}
-
-.parsed-columns {
-    overflow: scroll;
-}

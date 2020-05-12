@@ -65,7 +65,7 @@ use App\Util;
                 @php
                     $no = 0;
                 @endphp
-                <div class="card">
+                <div class="card fixed-parsed">
                     <div class="card-header line-no">
                         {{ ++$lineNo }}行目
                         <span class="badge badge-primary">{{ $row['total'] }}</span>

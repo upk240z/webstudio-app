@@ -16,3 +16,4 @@ composer.lock
 /config/secret.php
 /storage/db.sqlite
 /package-lock.json
+/public/css/
