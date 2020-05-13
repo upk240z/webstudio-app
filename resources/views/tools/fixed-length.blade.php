@@ -74,18 +74,18 @@ use App\Util;
                         <table class="table table-striped table-bordered fixed-length">
                             <tr>
                                 <th>No.</th>
-                                <th>項目名</th>
-                                <th>値</th>
                                 <th>バイト数</th>
                                 <th>開始位置</th>
+                                <th>項目名</th>
+                                <th>値</th>
                             </tr>
                             @foreach($row['columns'] as $column)
                                 <tr>
                                     <td>{{ ++$no }}</td>
-                                    <td class="nowrap">{{ $column['name'] }}</td>
-                                    <td>{{ $column['value'] }}</td>
                                     <td class="text-right">{{ $column['len'] }}</td>
                                     <td class="text-right">{{ $column['pos'] }}</td>
+                                    <td class="nowrap">{{ $column['name'] }}</td>
+                                    <td>{{ $column['value'] }}</td>
                                 </tr>
                             @endforeach
                         </table>
@@ -94,6 +94,15 @@ use App\Util;
             @endforeach
         @endif
     </form>
+
+    <div class="fixed-action-btn">
+        <a href="#" class="btn-floating shadow expand-btn bg-warning" data-toggle="tooltip" title="Expand">
+            <i class="fas fa-folder-open"></i>
+        </a>
+        <a href="#" class="btn-floating shadow fold-btn bg-primary" data-toggle="tooltip" title="Fold">
+            <i class="fas fa-folder"></i>
+        </a>
+    </div>
 @endsection
 
 @section('script')
@@ -109,6 +118,13 @@ use App\Util;
             $('.parsed-columns').hide();
             $('.line-no').on('click', function() {
                 $(this).closest('div.card').find('.parsed-columns').toggle();
+            });
+
+            $('.expand-btn').on('click', function() {
+                $('.parsed-columns').show();
+            });
+            $('.fold-btn').on('click', function() {
+                $('.parsed-columns').hide();
             });
         });
     </script>
