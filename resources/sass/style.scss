@@ -1,14 +1,5 @@
 @import "validation";
 
-h2 {
-    font-size: 100%;
-    font-weight: bold;
-}
-
-h3 {
-    font-size: 90%;
-}
-
 table.table th {
     text-align: center;
     vertical-align: middle !important;
@@ -20,14 +11,6 @@ table.wauto {
 
 .center, td.center, div.center {
     text-align: center;
-}
-
-.pagingheader {
-    color: #666666;
-}
-
-.margin12 {
-    margin-bottom: 12px;
 }
 
 td.number {
@@ -52,97 +35,100 @@ footer {
     margin-top: 20px;
 }
 
-.markdown h1 {
-    padding-left: 0px;
-    background-image: none;
-    font-size: 200%;
-    border-right: none;
-}
+.markdown {
+    h1 {
+        padding-left: 0;
+        background-image: none;
+        font-size: 200%;
+        border-right: none;
+    }
 
-.markdown h2 {
-    font-size: 180%;
-}
+    h2 {
+        font-size: 180%;
+    }
 
-.markdown h3 {
-    font-size: 150%;
-    font-weight: bold;
-}
+    h3 {
+        font-size: 150%;
+        font-weight: bold;
+    }
 
-.markdown h4 {
-    font-size: 120%;
-    font-weight: bold;
-}
+    h4 {
+        font-size: 120%;
+        font-weight: bold;
+    }
 
-.markdown ul > li {
-    list-style: disc;
-}
+    ul > li {
+        list-style: disc;
+    }
 
-.markdown ol > li {
-    list-style: decimal;
-}
+    ol > li {
+        list-style: decimal;
+    }
 
-.markdown .title {
-    border-bottom: #999 dashed 1px;
-    padding-bottom: 5px;
-}
+    .title {
+        border-bottom: #999 dashed 1px;
+        padding-bottom: 5px;
+    }
 
-.markdown table {
-    width: auto;
+    table {
+        width: auto;
+    }
 }
 
 .tree-menu {
     line-height: 1em;
-}
-
-.tree-menu, .tree-menu ul {
     margin: 0;
     padding: 0;
     list-style-type: none;
-}
+    > ul {
+        margin: 0;
+        padding: 0;
+        list-style-type: none;
+    }
 
-.tree-menu>li {
-    margin-bottom: 0.5em;
-}
+    ul {
+        position: relative;
+        margin-top: 0.5em;
+        margin-left: 1em;
+        li {
+            position: relative;
+            margin: 0;
+            padding: 0.5em 1em;
+        }
 
-.tree-menu ul {
-    position: relative;
-    margin-top: 0.5em;
-    margin-left: 1em;
-}
+        li:before {
+            content: "";
+            display: block;
+            position: absolute;
+            top: 1em;
+            left: 0;
+            width: 0.5em;
+            height: 0;
+            border-top: 1px solid currentColor;
+        }
 
-.tree-menu ul:before {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 0;
-    border-left: 1px solid currentColor;
-}
+        li:last-child:before {
+            top: 1em;
+            bottom: 0;
+            height: auto;
+            background-color: #fff;
+        }
+    }
 
-.tree-menu ul li {
-    position: relative;
-    margin: 0;
-    padding: 0.5em 1em;
-}
+    ul:before {
+        content: "";
+        display: block;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        border-left: 1px solid currentColor;
+    }
 
-.tree-menu ul li:before {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 1em;
-    left: 0;
-    width: 0.5em;
-    height: 0;
-    border-top: 1px solid currentColor;
-}
-
-.tree-menu ul li:last-child:before {
-    top: 1em;
-    bottom: 0;
-    height: auto;
-    background-color: #fff;
+    > li {
+        margin-bottom: 0.5em;
+    }
 }
 
 .fixed-parsed {
