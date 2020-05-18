@@ -191,7 +191,8 @@ class Tools extends Controller
 
     public function jsonPost(Request $request)
     {
-        $parsed = json_decode($request->post('input'), true);
+        $jsonStr = $request->post('input');
+        $parsed = json_decode($jsonStr, true);
         $yaml = null;
         if ($parsed !== null) {
             try {
@@ -199,6 +200,11 @@ class Tools extends Controller
             } catch (\Exception $e) {
                 Util::setMessage('error', $e->getMessage());
             }
+
+            $phpStr = str_replace(': ' , ' => ', $jsonStr);
+            $phpStr = str_replace('{' , '[', $phpStr);
+            $phpStr = str_replace('}' , ']', $phpStr);
+
         } else {
             Util::setMessage('error', 'parse error');
         }
@@ -207,6 +213,7 @@ class Tools extends Controller
             'input' => $request->post('input'),
             'parsed' => $parsed,
             'yaml' => $yaml,
+            'php' => $phpStr,
         ]);
     }
 

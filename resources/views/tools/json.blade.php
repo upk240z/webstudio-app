@@ -27,7 +27,7 @@ use App\Util;
             </div>
         </div>
 
-        @if ($parsed)
+        @if ($parsed !== null)
         <div class="card mt-3">
             <div class="card-header">
                 Parsed
@@ -36,7 +36,7 @@ use App\Util;
                 </button>
             </div>
             <div class="card-body">
-                <pre>{{ print_r($parsed) }}</pre>
+                <pre>{{ print_r($parsed, true) }}</pre>
             </div>
         </div>
 
@@ -48,7 +48,19 @@ use App\Util;
                 </button>
             </div>
             <div class="card-body">
-                <pre id="yaml-text">{{ trim(trim(substr($yaml, 3)), '.') }}</pre>
+                <pre>{{ trim(trim(substr($yaml, 3)), '.') }}</pre>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                PHP
+                <button type="button" class="btn btn-sm btn-info" name="copy-btn">
+                    <i class="fas fa-copy"></i>
+                </button>
+            </div>
+            <div class="card-body">
+                <pre>{!! $php !!}</pre>
             </div>
         </div>
         @endif
@@ -60,7 +72,7 @@ use App\Util;
     <script>
         $(function() {
             $('[name=copy-btn]').on('click', function() {
-                Util.copy($('#yaml-text').text());
+                Util.copy($(this).closest('div.card').find('pre:first').text());
                 return false;
             });
             $('[name=toggle-btn]').on('click', function() {
