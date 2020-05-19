@@ -194,6 +194,7 @@ class Tools extends Controller
         $jsonStr = $request->post('input');
         $parsed = json_decode($jsonStr, true);
         $yaml = null;
+        $phpStr = null;
         if ($parsed !== null) {
             try {
                 $yaml = yaml_emit($parsed, YAML_UTF8_ENCODING);
