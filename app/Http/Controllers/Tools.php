@@ -967,7 +967,7 @@ __END__;
                         $val = mb_convert_encoding(
                             substr($line, $pos, $len),
                             'UTF-8',
-                            'SJIS-win'
+                            $request->post('encoding')
                         );
                         $val = str_replace('　', $request->post('replace'), $val);
                         $columns[] = [
@@ -985,7 +985,9 @@ __END__;
                 }
                 fclose($fp);
             } while(false);
-
+            $post = $request->post();
+        } else {
+            $post = ['encoding' => 'SJIS-win'];
         }
 
         $files = [];
@@ -996,7 +998,7 @@ __END__;
         return view('tools.fixed-length', [
             'files' => $files,
             'rows' => $rows,
-            'post' => $request->post(),
+            'post' => $post,
         ]);
     }
 }

@@ -19,7 +19,7 @@ use App\Util;
         <div class="card">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-4">
+                    <div class="col-lg-4 col-sm-12">
                         <div class="form-group">
                             <label for="file">File</label>
                             <div class="custom-file">
@@ -28,7 +28,7 @@ use App\Util;
                             </div>
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-lg-2 col-sm-12">
                         <div class="form-group">
                             <label for="type">Type</label>
                             <select class="form-control" name="type" id="type">
@@ -38,13 +38,19 @@ use App\Util;
                             </select>
                         </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col-lg-2 col-sm-12">
+                        <div class="form-group">
+                            <label for="encoding">Encoding</label>
+                            <input type="text" class="form-control" name="encoding" value="{{ @$post['encoding'] }}">
+                        </div>
+                    </div>
+                    <div class="col-lg-2 col-sm-12">
                         <div class="form-group">
                             <label for="type">Replace space</label>
                             <input type="text" class="form-control" name="replace" value="{{ @$post['replace'] }}">
                         </div>
                     </div>
-                    <div class="col-2">
+                    <div class="col-lg-2 col-sm-12">
                         <div class="form-group">
                             <label>&nbsp;</label>
                             <div>
