@@ -6,6 +6,7 @@ use App;
 use App\GeoMemo;
 use App\Util;
 use Illuminate\Http\Request;
+use Endroid\QrCode\QrCode;
 
 class Tools extends Controller
 {
@@ -410,10 +411,36 @@ class Tools extends Controller
 
     public function qrcode(Request $request)
     {
+        $output = false;
+        if ($request->method() == 'POST') {
+            if (
+                strlen($request->post('type')) &&
+                strlen($request->post('size')) &&
+                strlen($request->post('text'))
+            ) {
+                $output = true;
+            }
+        }
+
         return view('tools.qrcode', [
-            'type' => null,
-            'size' => 10,
-            'text' => null,
+            'type' => $request->post('type', 'png'),
+            'size' => $request->post('size', 300),
+            'text' => $request->post('text'),
+            'output' => $output
+        ]);
+    }
+
+    public function qrImage(Request $request)
+    {
+        $qr = new QrCode($request->get('text'));
+        $qr->setSize($request->get('size'));
+        $qr->setWriterByName($request->get('type'));
+
+        $content = $qr->writeString();
+
+        return response($content)->withHeaders([
+            'Content-Type' => $qr->getContentType(),
+            'Content-Length' => strlen($content),
         ]);
     }
 

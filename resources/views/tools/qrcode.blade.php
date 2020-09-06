@@ -3,7 +3,6 @@ use App\Util;
 
 $TYPES = array(
     "png" => "PNG",
-    "jpeg" => "JPEG"
 );
 ?>
 @extends('layout.main')
@@ -18,9 +17,8 @@ $TYPES = array(
     <?php Util::showMessage('error') ?>
     <?php Util::showMessage('success') ?>
 
-    <form name="form1" method="get" action="{{ URL::current() }}" role="form">
-        {{ csrf_field() }}
-        <input type="hidden" name="action" value="url">
+    <form method="post" action="" role="form">
+        @csrf
         <input type="hidden" name="size" value="{{ $size }}">
 
         <div class="card">
@@ -60,21 +58,28 @@ $TYPES = array(
                 </div>
 
                 <div class="text-center">
-                    <button type="submit" class="btn btn-primary">生成</button>
+                    <button type="submit" class="btn btn-primary" id="create-btn">生成</button>
                 </div>
             </div>
         </div>
-
     </form>
 
+    @if($output)
+        <div class="card mt-5">
+            <div class="card-header">output</div>
+            <div class="card-body">
+                <img src="qrimg?type={{ $type }}&size={{ $size }}&text={{ urlencode($text) }}" alt="qrcode">
+            </div>
+        </div>
+    @endif
 @endsection
 
 @section('script')
     <script>
         $(function () {
             $("#slider").slider({
-                min: 1,
-                max: 19,
+                min: 100,
+                max: 1000,
                 value: "{{ $size }}",
                 slide: function(e, ui)
                 {
