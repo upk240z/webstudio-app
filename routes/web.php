@@ -62,7 +62,6 @@ Route::get('/tools/translation', 'Tools@translation');
 Route::post('/api/translation', 'Api@translation');
 Route::get('/api/speak', 'Api@speak');
 Route::get('/tools/csr', 'Tools@csr');
-Route::post('/tools/csr', 'Tools@csrPost');
 Route::match(['get', 'post'], '/tools/zen2han', 'Tools@zen2han');
 Route::match(['get', 'post'], '/tools/flen', 'Tools@fixedLength');
 

@@ -898,35 +898,7 @@ __END__;
 
     public function csr(Request $request)
     {
-        return view('tools.csr', [
-            'cn' => null,
-            'c' => 'JP',
-            'st' => null,
-            'l' => null,
-            'o' => null,
-            'ou' => null,
-            'created' => null,
-        ]);
-    }
-
-    public function csrPost(Request $request)
-    {
-        $parameters = $request->all();
-        try {
-            $parameters['created'] = Util::createCsr(
-                $request->post('cn'),
-                $request->post('c'),
-                $request->post('st'),
-                $request->post('l'),
-                $request->post('o'),
-                $request->post('ou')
-            );
-        } catch (\Exception $e) {
-            Util::setMessage('error', $e->getMessage());
-            $parameters['created'] = null;
-        }
-
-        return view('tools.csr', $parameters);
+        return view('tools.csr', []);
     }
 
     public function geomemo(Request $request)

@@ -339,7 +339,9 @@ var Validation = {
         Validation.form.on('submit', function() {
             Validation.validate();
             if (func !== undefined) {
-                func();
+                if (!func()) {
+                    return false;
+                }
             }
             if (Validation.existError()) {
                 Validation.scrollError();

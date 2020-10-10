@@ -13,7 +13,7 @@ use App\Util;
     <?php Util::showMessage('error') ?>
     <?php Util::showMessage('success') ?>
 
-    <form id="input-form" method="post" action="" role="form">
+    <form id="input-form" method="get" action="" role="form">
         {{ csrf_field() }}
 
         <div class="card">
@@ -23,51 +23,54 @@ use App\Util;
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="control-label">Common Name</label>
-                            <input type="text" class="form-control" name="cn" value="{{ $cn }}" validation="require">
+                            <input type="text" class="form-control" name="cn" value="" validation="require">
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="control-label">Country Name</label>
-                            <input type="text" class="form-control" name="c" value="{{ $c }}" validation="require">
+                            <input type="text" class="form-control" name="c" value="" validation="require">
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="control-label">State Or ProvinceName</label>
-                            <input type="text" class="form-control" name="st" value="{{ $st }}" validation="require">
+                            <input type="text" class="form-control" name="st" value="" validation="require">
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="control-label">Locality Name</label>
-                            <input type="text" class="form-control" name="l" value="{{ $l  }}" validation="require">
+                            <input type="text" class="form-control" name="l" value="" validation="require">
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="control-label">Organization Name</label>
-                            <input type="text" class="form-control" name="o" value="{{ $o }}" validation="require">
+                            <input type="text" class="form-control" name="o" value="" validation="require">
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-group">
                             <label class="control-label">Organization Unit Name</label>
-                            <input type="text" class="form-control" name="ou" value="{{ $ou }}">
+                            <input type="text" class="form-control" name="ou" value="">
                         </div>
                     </div>
                 </div>
 
                 <div class="text-center">
-                    <button type="submit" class="btn btn-primary btn-sm">生成</button>
+                    <button type="submit" class="btn btn-primary btn-sm" id="create-btn">生成</button>
+                    <button class="btn btn-primary btn-sm" type="button" disabled id="loading-btn">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        生成中...
+                    </button>
                 </div>
             </div>
         </div>
 
     </form>
 
-    @if ($created)
-    <div class="row mt-3">
+    <div class="row mt-3" id="created">
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
@@ -77,7 +80,7 @@ use App\Util;
                     </button>
                 </div>
                 <div class="card-body">
-                    <pre id="key-text">{{ $created['key'] }}</pre>
+                    <pre id="key-text"></pre>
                 </div>
             </div>
         </div>
@@ -90,12 +93,11 @@ use App\Util;
                     </button>
                 </div>
                 <div class="card-body">
-                    <pre id="csr-text">{{ $created['csr'] }}</pre>
+                    <pre id="csr-text"></pre>
                 </div>
             </div>
         </div>
     </div>
-    @endif
 
 @endsection
 
@@ -112,7 +114,46 @@ use App\Util;
                 return false;
             });
 
-            Validation.init('#input-form');
+            $('#created, #loading-btn').hide();
+
+            firebase.initializeApp({
+                apiKey: "AIzaSyAi5UB6ltc-ZTVohBuglaD57FWtoLlDvmY",
+                authDomain: "webstudio-30e6a.firebaseapp.com",
+                databaseURL: "https://webstudio-30e6a.firebaseio.com",
+                projectId: "webstudio-30e6a",
+                storageBucket: "webstudio-30e6a.appspot.com",
+                messagingSenderId: "711616945712",
+                appId: "1:711616945712:web:d7b0819f31059e8b9017f5",
+                measurementId: "G-XZ30D31Y3F"
+            });
+            let generateCsr = firebase.functions().httpsCallable('csr');
+
+            Validation.init('#input-form', function () {
+                if (!Validation.existError()) {
+                    $('#create-btn').hide();
+                    $('#loading-btn').show();
+                    $('#created').hide();
+                    generateCsr({
+                        commonName: $('input[name=cn]').val(),
+                        countryName: $('input[name=c]').val(),
+                        stateOrProvinceName: $('input[name=st]').val(),
+                        localityName: $('input[name=l]').val(),
+                        organizationName: $('input[name=o]').val(),
+                        organizationalUnitName: $('input[name=ou]').val()
+                    }).then(function (result) {
+                        $('#key-text').text(result.data.key);
+                        $('#csr-text').text(result.data.csr);
+                        $('#created').show();
+                    }).catch(function (err) {
+                        alert('生成に失敗');
+                        console.log(err);
+                    }).finally(function () {
+                        $('#loading-btn').hide();
+                        $('#create-btn').show();
+                    });
+                }
+                return false;
+            });
         });
     </script>
 @endsection
