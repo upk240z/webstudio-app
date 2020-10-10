@@ -117,14 +117,6 @@ use App\Util;
             $('#created, #loading-btn').hide();
 
             firebase.initializeApp({
-                apiKey: "AIzaSyAi5UB6ltc-ZTVohBuglaD57FWtoLlDvmY",
-                authDomain: "webstudio-30e6a.firebaseapp.com",
-                databaseURL: "https://webstudio-30e6a.firebaseio.com",
-                projectId: "webstudio-30e6a",
-                storageBucket: "webstudio-30e6a.appspot.com",
-                messagingSenderId: "711616945712",
-                appId: "1:711616945712:web:d7b0819f31059e8b9017f5",
-                measurementId: "G-XZ30D31Y3F"
             });
             let generateCsr = firebase.functions().httpsCallable('csr');
 
