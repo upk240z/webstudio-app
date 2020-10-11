@@ -104,6 +104,8 @@ use App\Util;
 @section('script')
     <script>
         $(function () {
+            const config = {!! json_encode($config) !!};
+
             $('[name=copy-key-btn]').on('click', function() {
                 Util.copy($('#key-text').text());
                 return false;
@@ -116,8 +118,7 @@ use App\Util;
 
             $('#created, #loading-btn').hide();
 
-            firebase.initializeApp({
-            });
+            firebase.initializeApp(config);
             let generateCsr = firebase.functions().httpsCallable('csr');
 
             Validation.init('#input-form', function () {

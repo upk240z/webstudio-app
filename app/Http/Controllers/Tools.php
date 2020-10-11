@@ -898,7 +898,9 @@ __END__;
 
     public function csr(Request $request)
     {
-        return view('tools.csr', []);
+        return view('tools.csr', [
+            'config' => config('secret.firebase')
+        ]);
     }
 
     public function geomemo(Request $request)
