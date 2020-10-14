@@ -15,7 +15,7 @@ class Top extends Controller
 
     public function index(Request $request)
     {
-        $folderId = $request->get('folder_id', 0);
+        $folderId = $request->get('folder_id', '00000');
 
         return view('index', [
             'folderId' => $folderId,
@@ -26,12 +26,12 @@ class Top extends Controller
 
     public function indexPost(Request $request)
     {
-        $postFolderId = $request->post('folder_id', 0);
-        $parentFolderId = $request->get('folder_id', 0);
+        $postFolderId = $request->post('folder_id', '00000');
+        $parentFolderId = $request->get('folder_id', '00000');
         if ($postFolderId) {
             Memo::updateFolder($postFolderId, $request->post('folder_name'));
         } else {
-            Memo::addFolder($request->post('folder_name'), (int)$parentFolderId);
+            Memo::addFolder($request->post('folder_name'), $parentFolderId);
         }
 
         return redirect('/?folder_id=' . $parentFolderId);
@@ -54,7 +54,7 @@ class Top extends Controller
             'folderId' => $folderId,
             'memoId' => $memoId,
             'title' => $memo['title'],
-            'updated_at' => $memo['updated_at'],
+            'updated_at' => date('Y-m-d H:i', strtotime($memo['updated_at'])),
             'body' => Memo::markDown($memo['body']),
             'folders' => Memo::folders($folderId),
             'tree' => Memo::folderTree(),
@@ -78,25 +78,38 @@ class Top extends Controller
 
     public function form(Request $request)
     {
-        $folderId = $request->get('folder_id', 0);
-        $memoId = $request->get('id', 0);
+        $folderId = $request->get('folder_id', '00000');
+        $memoId = $request->get('id', '00000');
+        $folders = Memo::folders($folderId);
 
-        $memo = Memo::getEntry($memoId);
+        if ((int)$memoId) {
+            $memo = Memo::getEntry($memoId);
+            $params = [
+                'folderId' => $folderId,
+                'memoId' => $memoId,
+                'title' => $memo['title'],
+                'updated_at' => $memo['updated_at'],
+                'body' => $memo['body'],
+                'folders' => $folders,
+            ];
+        } else {
+            $params = [
+                'folderId' => $folderId,
+                'memoId' => 0,
+                'title' => null,
+                'updated_at' => null,
+                'body' => null,
+                'folders' => $folders,
+            ];
+        }
 
-        return view('form', [
-            'folderId' => $folderId,
-            'memoId' => $memoId,
-            'title' => $memo['title'],
-            'updated_at' => $memo['updated_at'],
-            'body' => $memo['body'],
-            'folders' => Memo::folders($folderId),
-        ]);
+        return view('form', $params);
     }
 
     public function formPost(Request $request)
     {
-        $folderId = $request->post('folder_id', 0);
-        $memoId = $request->post('id', 0);
+        $folderId = $request->post('folder_id', '00000');
+        $memoId = $request->post('id', '00000');
 
         if ($memoId) {
             Memo::update([
@@ -113,7 +126,7 @@ class Top extends Controller
             ]);
         }
 
-        return redirect(sprintf('/memo?id=%d&folder_id=%d', $memoId, $folderId));
+        return redirect(sprintf('/memo?id=%s&folder_id=%s', $memoId, $folderId));
     }
 
     public function image(Request $request, $key)

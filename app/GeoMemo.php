@@ -1,13 +1,49 @@
 <?php
 namespace App;
 
-use DB;
+use Google\Cloud\Firestore\FirestoreClient;
 use Illuminate\Support\Facades\Cookie;
 
 class GeoMemo
 {
     const EARTH_RADIUS = 6371;
     const COOKIE_NAME = 'geomemo';
+
+    /**
+     * @var FirestoreClient null
+     */
+    private static $firestore = null;
+
+    private static function connect()
+    {
+        if (self::$firestore == null) {
+            self::$firestore = new FirestoreClient();
+        }
+    }
+
+    private static function id($id)
+    {
+        return sprintf('%05d', $id);
+    }
+
+    private static function createId()
+    {
+        self::connect();
+
+        $id = 1;
+        $docs = self::$firestore->collection('place')
+            ->orderBy('id', 'DESC')
+            ->limit(1)
+            ->documents();
+        if (!$docs->isEmpty()) {
+            foreach ($docs as $doc) {
+                $id = (int)$doc['id'] + 1;
+                break;
+            }
+        }
+
+        return self::id($id);
+    }
 
     public static function saveCookie($value)
     {
@@ -27,24 +63,24 @@ class GeoMemo
 
     public static function addPlace($lat, $lng, $label, $note)
     {
-        $sql = '
-            INSERT INTO place (
-                lat, lng, label, note, posx, posy, posz, last_modified_at
-            ) VALUES (:lat, :lng, :label, :note, :posx, :posy, :posz, :last_modified_at)
-        ';
+        self::connect();
 
+        $id = self::createId();
         $coordinates = self::spherical2cartesian($lat, $lng);
 
-        DB::insert($sql, [
-            'lat' => $lat,
-            'lng' => $lng,
-            'label' => $label,
-            'note' => $note,
-            'posx' => $coordinates['x'],
-            'posy' => $coordinates['y'],
-            'posz' => $coordinates['z'],
-            'last_modified_at' => time()
-        ]);
+        self::$firestore->collection('place')
+            ->document($id)
+            ->set([
+                'id' => $id,
+                'lat' => (float)$lat,
+                'lng' => (float)$lng,
+                'label' => $label,
+                'note' => $note,
+                'posx' => $coordinates['x'],
+                'posy' => $coordinates['y'],
+                'posz' => $coordinates['z'],
+                'last_modified_at' => time(),
+            ]);
     }
 
     private static function spherical2cartesian($lat, $lng)
@@ -60,12 +96,15 @@ class GeoMemo
 
     public static function getPlaces($lat, $lng)
     {
+        self::connect();
+
         $coordinates = self::spherical2cartesian($lat, $lng);
 
-        $sql = 'SELECT * FROM place';
-
-        $rows = Util::object2array(DB::select($sql));
-        foreach ($rows as &$row) {
+        $docs = self::$firestore->collection('place')->documents()->rows();
+        $rows = [];
+        foreach ($docs as $doc) {
+            $row = $doc->data();
+            $row['place_id'] = $row['id'];
             $distance = acos(
                 (
                     $coordinates['x'] * $row['posx'] +
@@ -77,6 +116,7 @@ class GeoMemo
                 $distance = 0.0;
             }
             $row['distance'] = sprintf('%.2f', $distance);
+            $rows[] = $row;
         }
 
         usort($rows, function($a, $b)
@@ -92,40 +132,31 @@ class GeoMemo
 
     public static function updatePlace($placeId, $lat, $lng, $label, $note)
     {
-        $sql = '
-            UPDATE place set
-                lat = :lat,
-                lng = :lng,
-                label = :label,
-                note = :note,
-                posx = :posx,
-                posy = :posy,
-                posz = :posz,
-                last_modified_at = :last_modified_at
-            WHERE place_id = :place_id
-        ';
+        self::connect();
 
+        $id = self::id($placeId);
         $coordinates = self::spherical2cartesian($lat, $lng);
 
-        DB::update($sql, [
-            'lat' => $lat,
-            'lng' => $lng,
-            'label' => $label,
-            'note' => $note,
-            'place_id' => $placeId,
-            'posx' => $coordinates['x'],
-            'posy' => $coordinates['y'],
-            'posz' => $coordinates['z'],
-            'last_modified_at' => time()
-        ]);
+        self::$firestore->collection('place')->document($id)
+            ->set([
+                'id' => $id,
+                'lat' => (float)$lat,
+                'lng' => (float)$lng,
+                'label' => $label,
+                'note' => $note,
+                'place_id' => $placeId,
+                'posx' => $coordinates['x'],
+                'posy' => $coordinates['y'],
+                'posz' => $coordinates['z'],
+                'last_modified_at' => time()
+            ]);
     }
 
     public static function removePlace($placeId)
     {
-        DB::delete(
-            'DELETE from place WHERE place_id = :place_id',
-            ['place_id' => $placeId]
-        );
+        self::connect();
+        $id = self::id($placeId);
+        self::$firestore->collection('place')->document($id)->delete();
     }
 
     public static function getDistance($lat1, $lng1, $lat2, $lng2)

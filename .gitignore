@@ -17,3 +17,5 @@ composer.lock
 /storage/db.sqlite
 /package-lock.json
 /public/css/
+/app/Console/Commands/Debug.php
+/config/webstudio.json

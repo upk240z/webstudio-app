@@ -4,33 +4,63 @@
 namespace App;
 
 
+use DateTime;
+use Google\Cloud\Core\Timestamp;
+use Google\Cloud\Firestore\FirestoreClient;
+
 class Memo
 {
+    /**
+     * @var FirestoreClient null
+     */
+    private static $firestore = null;
+
+    private static function connect()
+    {
+        if (self::$firestore == null) {
+            self::$firestore = new FirestoreClient();
+        }
+    }
+
+    private static function id($id)
+    {
+        return sprintf('%05d', $id);
+    }
+
     public static function getList($folderId = 0)
     {
+        self::connect();
+
+        $docs = self::$firestore->collection('folder')
+            ->where('parent_id', '=', self::id($folderId))
+            ->orderBy('folder_name')
+            ->documents();
+
         $rows = [];
 
-        $sql = '
-            SELECT * FROM folder WHERE parent_id = :parent_id
-            ORDER BY folder_name
-        ';
-
-        foreach (Util::object2array(\DB::select($sql, ['parent_id' => $folderId])) as $row) {
+        foreach ($docs as $row) {
             $rows[] = [
                 'is_folder' => true,
-                'folder_id' => $row['folder_id'],
+                'folder_id' => $row['id'],
                 'folder_name' =>  $row['folder_name']
             ];
         }
 
-        $sql = '
-            SELECT * FROM memo WHERE folder_id = :folder_id
-            ORDER BY title
-        ';
-        foreach (Util::object2array(\DB::select($sql, ['folder_id' => $folderId])) as $row) {
-            $row['is_folder'] = false;
-            if (!$row['updated_at']) $row['updated_at'] = $row['created_at'];
-            $rows[] = $row;
+        $docs = self::$firestore->collection('memo')
+            ->where('folder_id', '=', self::id($folderId))
+            ->orderBy('title')
+            ->documents();
+
+
+        foreach ($docs as $row) {
+            $rows[] = [
+                'is_folder' => false,
+                'memo_id' => $row['id'],
+                'title' => $row['title'],
+                'body' => $row['body'],
+                'created_at' => date('Y-m-d H:i', strtotime($row['created_at'])),
+                'updated_at' => date('Y-m-d H:i', strtotime($row['updated_at'])),
+            ];
         }
 
         return $rows;
@@ -38,26 +68,20 @@ class Memo
 
     public static function getFolder($folderId)
     {
-        $rows = Util::object2array(
-          \DB::select('SELECT * FROM folder WHERE folder_id = ?', [$folderId])
-        );
-        return count($rows) > 0 ? $rows[0] : null;
+        self::connect();
+        $doc = self::$firestore->collection('folder')
+            ->document(self::id($folderId))
+            ->snapshot();
+        return isset($doc['id']) ? $doc : null;
     }
 
     public static function getEntry($memo_id)
     {
-        $sql = "
-            select * from memo where memo_id = ?
-        ";
-        $rows = Util::object2array(\DB::select($sql, [$memo_id]));
-        if (count($rows) == 0) { return null; }
-
-        $row = $rows[0];
-        if (!$row["updated_at"]) {
-            $row["updated_at"] = $row["created_at"];
-        }
-
-        return $row;
+        self::connect();
+        $doc = self::$firestore->collection('memo')
+            ->document(self::id($memo_id))
+            ->snapshot();
+        return isset($doc['id']) ? $doc : null;
     }
 
     private static function convertBody($body)
@@ -69,21 +93,40 @@ class Memo
         );
     }
 
+    private static function createMemoId()
+    {
+        self::connect();
+
+        $id = 1;
+        $docs = self::$firestore->collection('memo')
+            ->orderBy('id', 'DESC')
+            ->limit(1)
+            ->documents();
+        if (!$docs->isEmpty()) {
+            foreach ($docs as $doc) {
+                $id = (int)$doc['id'] + 1;
+                break;
+            }
+        }
+
+        return self::id($id);
+    }
+
     public static function insert($columns)
     {
-        $sql = "
-            insert into memo (
-                title, body, folder_id, created_at
-            ) values (:title, :body, :folder_id, datetime('now', 'localtime'))
-        ";
+        self::connect();
 
-        \DB::insert($sql, array(
-            'title' => $columns['title'],
-            'body' => self::convertBody($columns['body']),
-            'folder_id' => $columns['folder_id']
-        ));
-
-        $id = \DB::getPdo()->lastInsertId();
+        $id = self::createMemoId();
+        $folderId = self::id($columns['folder_id']);
+        self::$firestore->collection('memo')->document($id)
+            ->set([
+                'id' => $id,
+                'title' => $columns['title'],
+                'body' => self::convertBody($columns['body']),
+                'folder_id' => $folderId,
+                'created_at' => new Timestamp(new DateTime()),
+                'updated_at' => new Timestamp(new DateTime()),
+            ]);
 
         if (!$id) {
             // 登録できなかった場合
@@ -95,32 +138,37 @@ class Memo
 
     public static function update($columns)
     {
-        $sql = "
-            update memo set
-                title = :title,
-                body = :body,
-                updated_at = datetime('now', 'localtime')
-            where memo_id = :memo_id
-        ";
-        \DB::update($sql, array(
-            'memo_id' => $columns['memo_id'],
-            'title' => $columns['title'],
-            'body' => self::convertBody($columns['body'])
-        ));
+        self::connect();
+
+        $id = self::id($columns['memo_id']);
+        self::$firestore->collection('memo')->document($id)
+            ->set([
+                'title' => $columns['title'],
+                'body' => self::convertBody($columns['body']),
+                'updated_at' => new Timestamp(new DateTime()),
+            ], ['merge' => true]);
     }
 
     public static function moveMemo($memoId, $folderId)
     {
-        $sql = 'UPDATE memo set folder_id = :folder_id WHERE memo_id = :memo_id';
-        \DB::update($sql, [
-            'memo_id' => $memoId,
-            'folder_id' => $folderId,
-        ]);
+        self::connect();
+
+        $id = self::id($memoId);
+        $folderId = self::id($folderId);
+
+        self::$firestore->collection('memo')->document($id)
+            ->set([
+                'folder_id' => $folderId,
+                'updated_at' => new Timestamp(new DateTime()),
+            ], ['merge' => true]);
     }
 
-    public static function delete($no)
+    public static function delete($memoId)
     {
-        \DB::delete('delete from memo where memo_id = ?', [$no]);
+        self::connect();
+
+        $id = self::id($memoId);
+        self::$firestore->collection('memo')->document($id)->delete();
     }
 
     public static function markDown($text)
@@ -143,59 +191,75 @@ class Memo
         return $mdText;
     }
 
+    private static function createFolderId()
+    {
+        self::connect();
+
+        $id = 1;
+        $docs = self::$firestore->collection('folder')
+            ->orderBy('id', 'DESC')
+            ->limit(1)
+            ->documents();
+        if (!$docs->isEmpty()) {
+            foreach ($docs as $doc) {
+                $id = (int)$doc['id'] + 1;
+                break;
+            }
+        }
+
+        return self::id($id);
+    }
+
     public static function addFolder($name, $parentId)
     {
-        $sql = '
-            INSERT INTO folder (folder_name, parent_id)
-            VALUES (:folder_name, :parent_id)
-        ';
+        self::connect();
 
-        \DB::insert($sql, [
-            'folder_name' => $name,
-            'parent_id' => $parentId
-        ]);
+        $id = self::createFolderId();
+        $parentId = self::id($parentId);
+
+        self::$firestore->collection('folder')->document($id)
+            ->set([
+                'id' => $id,
+                'folder_name' => $name,
+                'parent_id' => $parentId
+            ]);
     }
 
     public static function updateFolder($folderId, $name)
     {
-        $sql = '
-            UPDATE folder set folder_name = :folder_name
-            WHERE folder_id = :folder_id
-        ';
+        self::connect();
 
-        \DB::update($sql, [
-            'folder_name' => $name,
-            'folder_id' => $folderId
-        ]);
+        $id = self::id($folderId);
+        self::$firestore->collection('folder')->document($id)
+            ->set([
+                'folder_name' => $name,
+            ], ['merge' => true]);
     }
 
     public static function deleteFolder($folderId)
     {
-        $sql = '
-            DELETE FROM folder WHERE folder_id = :folder_id
-        ';
-
-        \DB::delete($sql, [
-            'folder_id' => $folderId
-        ]);
+        self::connect();
+        $id = self::id($folderId);
+        self::$firestore->collection('folder')->document($id)->delete();
     }
 
     public static function folders($folderId)
     {
-        $sql = 'SELECT parent_id, folder_name FROM folder WHERE folder_id = ?';
+        self::connect();
 
         $folders = [];
         $cursol = $folderId;
-        while ($cursol != -1) {
+        while (true) {
             if ($cursol == 0) {
                 $folders[] = [
                     'id' => $cursol,
                     'name' => 'TOP'
                 ];
-                $cursol = -1;
+                break;
             } else {
-                $rows = Util::object2array(\DB::select($sql, [$cursol]));
-                $folder = $rows[0];
+                $id = self::id($cursol);
+                $folder = self::$firestore->collection('folder')->document($id)
+                    ->snapshot();
                 $folders[] = [
                     'id' => $cursol,
                     'name' => $folder['folder_name']
@@ -227,32 +291,52 @@ class Memo
 
     public static function folderTree()
     {
-        $sql = '
-            SELECT f.*, p.folder_name as parent_name
-            FROM
-                folder as f
-                LEFT JOIN folder as p ON (f.parent_id = p.folder_id)
-            ORDER BY f.parent_id, f.folder_name
-        ';
+        self::connect();
 
+        $docs = self::$firestore->collection('folder')
+            ->orderBy('parent_id')
+            ->orderBy('folder_name')
+            ->documents();
         $folders = [];
-        foreach (Util::object2array(\DB::select($sql)) as $row) {
-            if (isset($folders[$row['parent_id']]) == false) {
-                $folders[$row['parent_id']] = [];
+        foreach ($docs as $doc) {
+            $parentId = $doc['parent_id'];
+            if (!isset($folders[$parentId])) {
+                $folders[$parentId] = [];
             }
-            $folders[$row['parent_id']][] = $row;
+
+            $parents = self::$firestore->collection('folder')
+                ->where('id', '=', $parentId)
+                ->orderBy('folder_name')
+                ->documents();
+
+            if ($parentId == '00000') {
+                $folders[$parentId][] = [
+                    'folder_id' => $doc['id'],
+                    'folder_name' => $doc['folder_name'],
+                    'parent_name' => null,
+                ];
+            }
+
+            foreach ($parents as $parent) {
+                $folders[$parentId][] = [
+                    'folder_id' => $doc['id'],
+                    'folder_name' => $doc['folder_name'],
+                    'parent_name' => $parent['folder_name'],
+                ];
+            }
+
         }
 
         $tree = [];
-        foreach ($folders[0] as $folder) {
-            $children = [];
+        foreach ($folders['00000'] as $folder) {
+            $parents = [];
             if (isset($folders[$folder['folder_id']])) {
-                $children = self::findChildrenFolder($folders, $folder['folder_id']);
+                $parents = self::findChildrenFolder($folders, $folder['folder_id']);
             }
             $tree[] = [
                 'id' => $folder['folder_id'],
                 'name' => $folder['folder_name'],
-                'children' => $children
+                'children' => $parents
             ];
         }
 
