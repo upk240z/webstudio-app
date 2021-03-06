@@ -23,5 +23,6 @@ class VerifyCsrfToken extends Middleware
         '/geoapi/*',
         '/free/*',
         '/echo',
+        '/receiver',
     ];
 }

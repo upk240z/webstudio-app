@@ -91,3 +91,4 @@ Route::get('/free/params', 'Free@params');
 Route::post('/free/params', 'Free@params');
 
 Route::match(['get', 'post'], '/echo', 'Pub@echo');
+Route::match(['get', 'post'], '/receiver', 'Pub@receiver');
