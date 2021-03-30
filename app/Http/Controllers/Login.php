@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Util;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 use Session;
 
 class Login extends Controller
@@ -32,7 +33,13 @@ class Login extends Controller
                 'login' => $loginId,
                 'expire' => time() + 60 * 120
             ]);
-            return redirect($request->post('target'));
+
+            $target = $request->post('target');
+            if (url($target) == url('/')) {
+                $target .= '/';
+            }
+
+            return redirect($target);
         } else {
             Util::setMessage('error', 'Login failure');
             return view('login', $request->post());
@@ -42,6 +49,6 @@ class Login extends Controller
     public function logout()
     {
         Session::remove('login');
-        return redirect('/');
+        return redirect(url('/') . '/');
     }
 }

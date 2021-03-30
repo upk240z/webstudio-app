@@ -64,7 +64,7 @@ class Top extends Controller
     public function delete(Request $request)
     {
         Memo::delete($request->post('memo_id'));
-        return redirect('/?folder_id=' . $request->post('folder_id'));
+        return redirect(url('/') . '/?folder_id=' . $request->post('folder_id'));
     }
 
     public function moveMemo(Request $request)
@@ -73,7 +73,7 @@ class Top extends Controller
             $request->post('memo_id'),
             $request->post('folder_id')
         );
-        return redirect('/?folder_id=' . $request->post('folder_id'));
+        return redirect(url('/') . '/?folder_id=' . $request->post('folder_id'));
     }
 
     public function form(Request $request)

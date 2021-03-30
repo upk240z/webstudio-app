@@ -1,5 +1,5 @@
 <?php
-$_base = url('/');
+$_base = url('/') . '/';
 $_url = URL::current();
 $isMemo = $_url == $_base || preg_match('@/form$@', $_url);
 ?>

@@ -42,7 +42,7 @@ function printTree($tree)
                     @if(!$first)
                     &gt;
                     @endif
-                    <a href="{{ url('/') }}?folder_id={{ $folder['id'] }}">{{ $folder['name'] }}</a>
+                    <a href="{{ url('/') }}/?folder_id={{ $folder['id'] }}">{{ $folder['name'] }}</a>
                     <?php $first = false; ?>
                     @endforeach
                 </h5>
@@ -62,7 +62,7 @@ function printTree($tree)
                     <span class="fas fa-trash"></span>
                 </button>
                 <span class="float-right">&nbsp;</span>
-                <a class="float-right btn btn-warning" href="{{ url('/') }}?folder_id={{ $folderId }}">
+                <a class="float-right btn btn-warning" href="{{ url('/') }}/?folder_id={{ $folderId }}">
                     <span class="fas fa-list"></span>
                 </a>
             </div>

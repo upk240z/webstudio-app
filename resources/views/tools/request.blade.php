@@ -35,7 +35,7 @@
 
         <div class="card-body @if ($response) collapse @endif">
 
-            <form id="requestform" method="post" action="{{ URL::current() }}" role="form">
+            <form id="requestform" method="post" action="" role="form">
                 {{ csrf_field() }}
 
                 <div class="form-group">

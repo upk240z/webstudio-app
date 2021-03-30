@@ -13,7 +13,7 @@ use App\Util;
     <?php Util::showMessage('error') ?>
     <?php Util::showMessage('success') ?>
 
-    <form name="form1" method="post" action="{{ URL::current() }}">
+    <form name="form1" method="post" action="">
         {{ csrf_field() }}
         <div class="card">
             <div class="card-header">Input</div>
