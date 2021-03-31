@@ -1,10 +1,10 @@
 <?php
-$_base = url('/') . '/';
+$_base = url('/');
 $_url = URL::current();
 $isMemo = $_url == $_base || preg_match('@/form$@', $_url);
 ?>
 <nav class="navbar navbar-expand-lg navbar-dark bg-info my-3 rounded shadow">
-    <a class="navbar-brand" href="{{ $_base }}">WebStudio</a>
+    <a class="navbar-brand" href="{{ $_base }}/">WebStudio</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
