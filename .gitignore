@@ -19,3 +19,4 @@ composer.lock
 /public/css/
 /app/Console/Commands/Debug.php
 /config/webstudio.json
+/config/fixed-length.yaml
