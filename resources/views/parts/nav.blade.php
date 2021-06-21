@@ -11,7 +11,7 @@ $isMemo = $_url == $_base || preg_match('@/form$@', $_url);
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link<?php echo $isMemo ? ' active' : '' ?>" href="{{ $_base }}">
+                <a class="nav-link<?php echo $isMemo ? ' active' : '' ?>" href="{{ $_base }}/">
                     Memo
                 </a>
             </li>
