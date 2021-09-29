@@ -204,6 +204,7 @@ class Tools extends Controller
             }
 
             $phpStr = str_replace(': ' , ' => ', $jsonStr);
+            $phpStr = str_replace(':' , ' => ', $phpStr);
             $phpStr = str_replace('{' , '[', $phpStr);
             $phpStr = str_replace('}' , ']', $phpStr);
 
