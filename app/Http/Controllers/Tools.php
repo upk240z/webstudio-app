@@ -960,8 +960,9 @@ __END__;
 
                 $rows = [];
                 while (!feof($fp)) {
-                    $line = trim(fgets($fp));
-                    if (strlen($line) == 0) { continue; }
+                    $line = preg_replace('/(\r\n|\r|\n)$/', '', fgets($fp));
+                    $lineLen = strlen($line);
+                    if ($lineLen == 0) { continue; }
                     $columns = [];
                     $pos = 0;
                     foreach ($config['columns'] as $row) {
@@ -982,7 +983,7 @@ __END__;
                     }
                     $rows[] = [
                         'columns' => $columns,
-                        'total' => $pos,
+                        'total' => $lineLen,
                     ];
                 }
                 fclose($fp);
